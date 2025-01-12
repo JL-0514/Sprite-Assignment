@@ -1,13 +1,10 @@
-// This game shell was happily modified from Googler Seth Ladd's "Bad Aliens" game and his Google IO talk in 2011
-
 class GameEngine {
     constructor(options) {
-        // What you will use to draw
-        // Documentation: https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D
         this.ctx = null;
 
-        // Everything that will be updated and drawn each frame
         this.entities = [];
+
+        this.clockTick = null;
 
         // Information on the input
         this.click = null;
@@ -60,16 +57,8 @@ class GameEngine {
             if (this.options.debugging) {
                 console.log("WHEEL", getXandY(e), e.wheelDelta);
             }
-            e.preventDefault(); // Prevent Scrolling
+            e.preventDefault();
             this.wheel = e;
-        });
-
-        this.ctx.canvas.addEventListener("contextmenu", e => {
-            if (this.options.debugging) {
-                console.log("RIGHT_CLICK", getXandY(e));
-            }
-            e.preventDefault(); // Prevent Context Menu
-            this.rightclick = getXandY(e);
         });
 
         this.ctx.canvas.addEventListener("keydown", event => this.keys[event.key] = true);
@@ -81,12 +70,14 @@ class GameEngine {
     };
 
     draw() {
-        // Clear the whole canvas with transparent color (rgba(0, 0, 0, 0))
         this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
 
-        // Draw latest things first
-        for (let i = this.entities.length - 1; i >= 0; i--) {
-            this.entities[i].draw(this.ctx, this);
+        // Add some background color so we can see characters better
+        this.ctx.fillStyle = "#00CCFF";
+        this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+
+        for (var i = 0; i < this.entities.length; i++) {
+            this.entities[i].draw(this.ctx);
         }
     };
 
@@ -115,5 +106,3 @@ class GameEngine {
     };
 
 };
-
-// KV Le was here :)
